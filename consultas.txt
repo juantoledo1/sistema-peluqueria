@@ -1,158 +1,135 @@
---                             CONSULTAS 
---                           tabla empleados
--- alta, modificacion, baja
+-- Agregar un nuevo cliente:
+INSERT INTO clientes (nombre, apellido, telefono) VALUES ('eneique', 'toledo', '3764103261');
 
--- Agregar un nuevo empleado
-INSERT INTO Empleados (nombre, apellido, correo, usuario, contrasena)
-VALUES ('NuevoEmpleado', 'NuevoApellido', 'nuevo@empleado.com', 'nuevoempleado', 'contrasena123' );
+-- Ver lista de clientes:
+select * from clientes;
 
--- Modificar el nombre de usuario y contraseña de un empleado
-UPDATE Empleados
-SET usuario = 'nuevo_usuario', contrasena = 'nueva_contraseña'
-WHERE id_empleado = 1;
+-- Modificar los datos de un cliente:
+UPDATE clientes SET telefono = '555-5678' WHERE id_cliente = 1;
 
--- Eliminar un empleado
-DELETE FROM Empleados
-WHERE id_empleado = 2;
+-- Eliminar un cliente:
+DELETE FROM clientes WHERE id_cliente = 1;
 
-
-
-
-
---                               tabla clientes
--- alta, modificacion, baja
-
--- Agregar un nuevo cliente
-INSERT INTO Clientes (nombre, apellido, telefono, correo)
-VALUES ('NuevoCliente', 'NuevoApellido', '987654321', 'nuevo@cliente.com');
-
--- Modificar el correo de un cliente
-UPDATE Clientes
-SET correo = 'nuevocorreo@cliente.com'
+-- modificar nombre cientes: 
+UPDATE clientes
+SET nombre = 'enrique'
 WHERE id_cliente = 1;
 
--- Eliminar un cliente
-DELETE FROM Clientes
-WHERE id_cliente = 2;
+
+
+
+-- Agregar un nuevo empleado:
+INSERT INTO empleados (nombre, apellido, correo, telefono) VALUES ('juan', 'toledo', 'juan@juan.com', '3764674458');
+
+-- Ver lista de empleados:
+SELECT * FROM empleados;
+
+-- Modificar los datos de un empleado:
+UPDATE empleados SET telefono = '555-5678' WHERE id_empleado = 1;
+
+-- Eliminar un empleado:
+DELETE FROM empleados WHERE id_empleado = 1;
 
 
 
 
 
---                               tabla servicios
--- alta, modificacion, baja
 
--- Agregar un nuevo servicio
-INSERT INTO Servicios (nombre, descripcion, precio)
-VALUES ('corte masculino', 'militar', 1500.00);
+-- Agregar un nuevo usuario:
+INSERT INTO usuarios (nombre, apellido, correo, user, pass, id_rol) VALUES ('Nuevo', 'Usuario', 'usuario@example.com', 'usuario', '123456', 1);
 
--- Modificar la descripción y el precio de un servicio
-UPDATE Servicios
-SET descripcion = 'Nueva descripción', precio = 60.00
-WHERE id_servicio = 1;
+-- Ver lista de usuario:
+SELECT * FROM usuarios;
 
--- Eliminar un servicio
-DELETE FROM Servicios
-WHERE id_servicio = 2;
+-- Modificar los datos de un usuario:
+UPDATE usuarios SET correo = 'nuevo_correo@example.com' WHERE id_usuario = 1;
+
+-- Eliminar un usuario:
+DELETE FROM usuarios WHERE id_usuario = 1;
 
 
 
 
---                                 tabla turnos
--- alta, modificacion, baja
 
 
 
-    -- Agregar un nuevo turno 
-INSERT INTO Turnos (cliente_id, empleado_id, servicio_id, fecha_hora)
-VALUES (2, 3, 4, '2023-06-22 15:30:00');
+
+-- Agregar un nuevo servicio:
+INSERT INTO servicios (nombre, descripcion, precio) VALUES ('corte M', 'corte militar', 1500.00);
+
+-- Ver lista de servicio:
+SELECT * FROM servicios;
+
+-- Modificar los datos de un servicio:
+UPDATE servicios SET precio = 45.00 WHERE id_servicio = 1;
+
+-- Eliminar un servicio:
+DELETE FROM servicios WHERE id_servicio = 1;
 
 
 
-    -- Modificar un turno existente
-UPDATE Turnos
-SET cliente_id = 2, empleado_id = 3, servicio_id = 4, fecha_hora = '2023-06-22 15:30:00'
-WHERE id_turno = 1;
-
--- Eliminar un turno
-DELETE FROM Turnos
-WHERE id_turno = 1;
 
 
--- listar todos los turnos(id_turno, nombre de cliente, nombre de empleado, nombre del servicio, precio del servicio, hora y fecha)
-SELECT 
-    T.id_turno,
-    C.nombre AS cliente,
-    E.nombre AS empleado,
-    S.nombre AS servicio,
-    S.precio AS precio_servicio,
-    T.fecha_hora
-FROM 
-    Turnos T
-    JOIN Clientes C ON T.cliente_id = C.id_cliente
-    JOIN Empleados E ON T.empleado_id = E.id_empleado
-    JOIN Servicios S ON T.servicio_id = S.id_servicio;
+
+-- Agregar un nuevo turno con detalles y precio:
+INSERT INTO turnos (fecha, hora, id_cliente, id_detalle, id_empleado, id_servicio)
+VALUES ('2023-08-12', '10:00:00', 1, 1, 1, 1); -- Ajusta los IDs según tu base de datos
+
+-- Modificar datos de turno:
+UPDATE turnos SET hora = '14:30:00' WHERE id_turno = 1;
+
+-- Eliminar un turno:
+DELETE FROM turnos WHERE id_turno = 1;
+
+
+-- Ver lista de turnos con detalles de cliente, detalle y precio del servicio:
+SELECT t.id_turno, t.fecha, t.hora, c.nombre AS nombre_cliente, c.apellido AS apellido_cliente, d.lugar AS detalle, s.nombre AS servicio, s.precio	
+	FROM turnos t
+	    inner join clientes c on t.id_cliente = c.id_cliente
+        inner join detalles d on t.id_detalle = d.id_detalle
+        inner join servicios s on t.id_servicio = s.id_servicio;
+
+
+
+
+
+
+
+
+
+
+
+-- Roles: 
+
+
+INSERT INTO roles (nombre) VALUES ('Admin');
+INSERT INTO roles (nombre) VALUES ('Usuario');
+
+
+
+-- Detalles: Carga algunos detalles básicos, como el tipo de lugar:
+
+INSERT INTO detalles (lugar) VALUES ('local');
+INSERT INTO detalles (lugar) VALUES ('domicilio');
+
+
+
+-- Usuarios: Agrega  usuarios :
+
+INSERT INTO usuarios (nombre, apellido, correo, user, pass, id_rol) VALUES ('Usuario', 'Uno', 'usuario1@example.com', 'usuario1', '123456', 2);
+
+
+
+
+-- Turnos: turnos con detalles:
+INSERT INTO turnos (fecha, hora, id_cliente, id_detalle, id_empleado, id_servicio)
+VALUES ('2023-08-12', '10:00:00', 1, 1, 1, 1); 
+
+
+
+
+
+
+
     
-
-
-
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-select * from empleados;
-
--- mostrar tabla servicios (id_servicio, nombre, descripcion, precio)
-select * from servicios;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- Agregar un nuevo turno (Cliente que hizo un servicio)
-INSERT INTO Turnos (cliente_id, empleado_id, servicio_id, fecha_hora)
-VALUES (1, 3, 1, '2023-07-24 10:00:00'); -- Cambiar los valores según corresponda
-
-
-
--- Obtener la lista de turnos con información detallada
-SELECT T.id_turno, C.nombre AS nombre_cliente, E.nombre AS nombre_empleado, S.nombre AS nombre_servicio, T.fecha_hora
-FROM Turnos T
-JOIN Clientes C ON T.cliente_id = C.id_cliente
-JOIN Empleados E ON T.empleado_id = E.id_empleado
-JOIN Servicios S ON T.servicio_id = S.id_servicio;
-
-
-
