@@ -1,6 +1,8 @@
 // declaramos la constante express y en la siguiente linea en de vez de app=express,  ponemos routes=express p
 const express= require ('express');
 const router = express();
+const mysqlconect= require('../database/database')
+// router(require('../database/database'));
 
 router.get('/ruta1',(req,res)=>{
     res.send('hola, probando ruta1')
