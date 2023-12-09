@@ -1,23 +1,21 @@
-// conectamos a la base de datos 
-const mysql=require('mysql');
-const mysqlconect= mysql.createConnection({
-    host:'localhost',
-    user: 'root',
-    password:'cypresshill1',
-    database: 'barber'
+const mysql = require('mysql2');
+
+// Configuración de la conexión a la base de datos
+const mysqlConnection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'Sinley123.',
+  database: 'peluqueria',
 });
 
-
-
-// comprobamos si hay un errror o no
-mysqlconect.connect(function(error){
-    if(error){
-        console.log("hay nun errot")
-        return;
-    }else{
-        console.log("se conecto a la base de datos")
-    }
+// Conectar a la base de datos
+mysqlConnection.connect((err) => {
+  if (err) {
+    console.error('Error al conectar a la base de datos:', err.message);
+  } else {
+    console.log('Conexión exitosa a la base de datos');
+  }
 });
 
-// exportamos 
-module.exports= mysqlconect;
+// Exportar la conexión para su uso en otros módulos
+module.exports = mysqlConnection;

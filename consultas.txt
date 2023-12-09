@@ -1,129 +1,89 @@
--- Agregar un nuevo cliente:
-INSERT INTO clientes (nombre, apellido, telefono) VALUES ('eneique', 'toledo', '3764103261');
+-- Crear un nuevo rol
+INSERT INTO roles (nombre) VALUES ('NombreNuevoRol');
 
--- Ver lista de clientes:
-select * from clientes;
+-- Obtener todos los roles
+SELECT * FROM roles;
 
--- Modificar los datos de un cliente:
-UPDATE clientes SET telefono = '555-5678' WHERE id_cliente = 1;
+-- Actualizar un rol
+UPDATE roles SET nombre = 'NuevoNombreRol' WHERE rol_id = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
--- Eliminar un cliente:
-DELETE FROM clientes WHERE id_cliente = 1;
+-- Eliminar un rol
+DELETE FROM roles WHERE rol_id = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
--- modificar nombre cientes: 
-UPDATE clientes
-SET nombre = 'enrique'
-WHERE id_cliente = 1;
+-- Crear un nuevo empleado
+INSERT INTO empleados (nombre, apellido, correo, telefono) VALUES ('NombreNuevo', 'ApellidoNuevo', 'correo@example.com', '123456789');
 
-
-
-
--- Agregar un nuevo empleado:
-INSERT INTO empleados (nombre, apellido, correo, telefono) VALUES ('juan', 'toledo', 'juan@juan.com', '3764674458');
-
--- Ver lista de empleados:
+-- Obtener todos los empleados
 SELECT * FROM empleados;
 
--- Modificar los datos de un empleado:
-UPDATE empleados SET telefono = '555-5678' WHERE id_empleado = 1;
+-- Obtener un empleado por ID
+SELECT * FROM empleados WHERE id_empleado = 1; -- Cambia el valor de 1 por el ID que estás buscando
 
--- Eliminar un empleado:
-DELETE FROM empleados WHERE id_empleado = 1;
+-- Actualizar un empleado
+UPDATE empleados SET nombre = 'NuevoNombre' WHERE id_empleado = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
+-- Eliminar un empleado
+DELETE FROM empleados WHERE id_empleado = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
+-- Crear un nuevo servicio
+INSERT INTO servicios (nombre, descripcion, precio) VALUES ('ServicioNuevo', 'Descripción del Servicio', 50.0);
 
-
-
-
--- Agregar un nuevo usuario:
-INSERT INTO usuarios (nombre, apellido, correo, user, pass, id_rol) VALUES ('Nuevo', 'Usuario', 'usuario@example.com', 'usuario', '123456', 1);
-
--- Ver lista de usuario:
-SELECT * FROM usuarios;
-
--- Modificar los datos de un usuario:
-UPDATE usuarios SET correo = 'nuevo_correo@example.com' WHERE id_usuario = 1;
-
--- Eliminar un usuario:
-DELETE FROM usuarios WHERE id_usuario = 1;
-
-
-
-
-
-
-
-
--- Agregar un nuevo servicio:
-INSERT INTO servicios (nombre, descripcion, precio) VALUES ('corte M', 'corte militar', 1500.00);
-
--- Ver lista de servicio:
+-- Obtener todos los servicios
 SELECT * FROM servicios;
 
--- Modificar los datos de un servicio:
-UPDATE servicios SET precio = 45.00 WHERE id_servicio = 1;
+-- Obtener un servicio por ID
+SELECT * FROM servicios WHERE id_servicio = 1; -- Cambia el valor de 1 por el ID que estás buscando
 
--- Eliminar un servicio:
-DELETE FROM servicios WHERE id_servicio = 1;
+-- Actualizar un servicio
+UPDATE servicios SET nombre = 'NuevoNombre' WHERE id_servicio = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
+-- Eliminar un servicio
+DELETE FROM servicios WHERE id_servicio = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
+-- Crear un nuevo cliente
+INSERT INTO clientes (nombre, apellido, correo, telefono) VALUES ('NombreNuevo', 'ApellidoNuevo', 'correo_cliente@example.com', '987654321');
 
+-- Obtener todos los clientes
+SELECT * FROM clientes;
 
+-- Obtener un cliente por ID
+SELECT * FROM clientes WHERE id_cliente = 1; -- Cambia el valor de 1 por el ID que estás buscando
 
+-- Actualizar un cliente
+UPDATE clientes SET nombre = 'NuevoNombre' WHERE id_cliente = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
--- Agregar un nuevo turno con detalles y precio:
-INSERT INTO turnos (fecha, hora, id_cliente, id_detalle, id_empleado, id_servicio)
-VALUES ('2023-08-12', '10:00:00', 1, 1, 1, 1); -- Ajusta los IDs según tu base de datos
+-- Eliminar un cliente
+DELETE FROM clientes WHERE id_cliente = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
--- Modificar datos de turno:
-UPDATE turnos SET hora = '14:30:00' WHERE id_turno = 1;
+-- Crear un nuevo turno
+INSERT INTO turnos (fecha, hora, id_cliente, id_empleado, id_servicio) VALUES ('2023-01-01', '12:00:00', 1, 1, 1);
 
--- Eliminar un turno:
-DELETE FROM turnos WHERE id_turno = 1;
+-- Obtener todos los turnos
+SELECT * FROM turnos;
 
+-- Obtener un turno por ID
+SELECT * FROM turnos WHERE id_turno = 1; -- Cambia el valor de 1 por el ID que estás buscando
 
--- Ver lista de turnos con detalles de cliente, detalle y precio del servicio:
-SELECT t.id_turno, t.fecha, t.hora, c.nombre AS nombre_cliente, c.apellido AS apellido_cliente, d.lugar AS detalle, s.nombre AS servicio, s.precio	
-	FROM turnos t
-	    inner join clientes c on t.id_cliente = c.id_cliente
-        inner join detalles d on t.id_detalle = d.id_detalle
-        inner join servicios s on t.id_servicio = s.id_servicio;
+-- Actualizar un turno
+UPDATE turnos SET fecha = '2023-02-01' WHERE id_turno = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
+-- Eliminar un turno
+DELETE FROM turnos WHERE id_turno = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
+-- Crear un nuevo usuario
+INSERT INTO usuarios (nombre, apellido, dni, user, pass, correo, rol_id, estado) VALUES ('NombreNuevo', 'ApellidoNuevo', 123456789, 'usuario_nuevo', 'contrasena_nueva', 'correo_usuario@example.com', 1, 'A');
 
+-- Obtener todos los usuarios
+SELECT * FROM usuarios;
 
+-- Obtener un usuario por ID
+SELECT * FROM usuarios WHERE usuario_id = 1; -- Cambia el valor de 1 por el ID que estás buscando
 
+-- Actualizar un usuario
+UPDATE usuarios SET nombre = 'NuevoNombre' WHERE usuario_id = 1; -- Cambia el valor de 1 por el ID que estás actualizando
 
-
-
-
-
-
--- Roles: 
-
-
-INSERT INTO roles (nombre) VALUES ('Admin');
-INSERT INTO roles (nombre) VALUES ('Usuario');
-
-
-
--- Detalles: Carga algunos detalles básicos, como el tipo de lugar:
-
-INSERT INTO detalles (lugar) VALUES ('local');
-INSERT INTO detalles (lugar) VALUES ('domicilio');
-
-
-
--- Usuarios: Agrega  usuarios :
-
-INSERT INTO usuarios (nombre, apellido, correo, user, pass, id_rol) VALUES ('Usuario', 'Uno', 'usuario1@example.com', 'usuario1', '123456', 2);
-
-
-
-
--- Turnos: turnos con detalles:
-INSERT INTO turnos (fecha, hora, id_cliente, id_detalle, id_empleado, id_servicio)
-VALUES ('2023-08-12', '10:00:00', 1, 1, 1, 1); 
+-- Eliminar un usuario
+DELETE FROM usuarios WHERE usuario_id = 1; -- Cambia el valor de 1 por el ID que estás eliminando
 
 
 
@@ -131,5 +91,63 @@ VALUES ('2023-08-12', '10:00:00', 1, 1, 1, 1);
 
 
 
-    
-    
+
+
+
+
+
+
+
+
+
+consultas postman empleados: Listar todos los empleados
+
+    Método: GET
+    URL: http://localhost:2023/listar_empleados
+
+Listar un empleado por ID
+
+    Método: GET
+    URL: http://localhost:2023/listar_empleado/1
+    (cambia "1" por el ID del empleado que desees consultar)
+
+Crear un nuevo empleado
+
+    Método: POST
+    URL: http://localhost:2023/crear_empleado
+    Cuerpo (raw, JSON):
+
+    json
+
+    {
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "correo": "juan.perez@example.com",
+      "telefono": "123456789"
+    }
+
+Actualizar un empleado por ID
+
+    Método: PUT
+    URL: http://localhost:2023/actualizar_empleado/1
+    (cambia "1" por el ID del empleado que desees actualizar)
+    Cuerpo (raw, JSON):
+
+    json
+
+    {
+      "nombre": "Juan Modificado",
+      "apellido": "Pérez Modificado",
+      "correo": "juan.perez.modificado@example.com",
+      "telefono": "987654321"
+    }
+
+Eliminar un empleado por ID
+
+    Método: DELETE
+    URL: http://localhost:2023/eliminar_empleado/1
+    (cambia "1" por el ID del empleado que desees eliminar)
+
+Puedes usar estos ejemplos en Postman para realizar pruebas en tu API. Asegúrate de ajustar los valores según sea necesario y de tener el servidor en ejecución. Si necesitas más detalles o tienes alguna pregunta específica sobre alguna de las operaciones, no dudes en preguntar.
+
+

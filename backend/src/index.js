@@ -1,24 +1,34 @@
-//usamos libreria express para levantar nuesto server
-const express= require ('express');
-
-//llamamos app a las funciones que tenemos dentro de express
+const express = require('express');
 const app = express();
+const morgan = require('morgan');
+const bodyParser = require('body-parser'); // Agregamos body-parser
 
-// asignamos la constante de morgan en puerto 2000
-const morgan = require ('morgan');
-app.set('puerto', 2000);
+// Configuramos el puerto a 2023
+app.set('puerto', 2023);
 
+// Middleware para registrar solicitudes en la consola (morgan)
+app.use(morgan('dev'));
 
-
-/*prueba de ruteo 
-app.get('/', (req,res)=>{
-    res.send('hola hola')
-})
-*/
-
-
-app.listen(app.get('puerto'), ()=>{
-    console.log('server iniciado', app.get('puerto'))
+// Middleware para habilitar CORS
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
 });
 
-app.use(require('./routes/routes'))
+// Middleware para analizar el cuerpo de las solicitudes JSON
+app.use(bodyParser.json());
+
+// Rutas para cada entidad (empleados, servicios, clientes, etc.)
+app.use(require('./routes/routesEmpleados.js'));
+// app.use(require('./routes/routesServicios.js'));
+// app.use(require('./routes/routesClientes.js'));
+// app.use(require('./routes/routesTurnos.js'));
+// app.use(require('./routes/routesUsuarios.js'));
+
+// Iniciar el servidor
+app.listen(app.get('puerto'), () => {
+    console.log('El servidor de la peluquería está corriendo en el puerto', app.get('puerto'));
+});
