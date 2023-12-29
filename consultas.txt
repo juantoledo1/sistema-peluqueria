@@ -93,8 +93,10 @@ DELETE FROM usuarios WHERE usuario_id = 1; -- Cambia el valor de 1 por el ID que
 
 
 
+reiniciar en este caso empleados pero poner lo que se desea reiniciar en workbench
 
-
+DELETE FROM empleados where id_empleado ;
+ALTER TABLE empleados AUTO_INCREMENT = 1;
 
 
 
@@ -151,3 +153,29 @@ Eliminar un empleado por ID
 Puedes usar estos ejemplos en Postman para realizar pruebas en tu API. Asegúrate de ajustar los valores según sea necesario y de tener el servidor en ejecución. Si necesitas más detalles o tienes alguna pregunta específica sobre alguna de las operaciones, no dudes en preguntar.
 
 
+
+
+
+
+
+
+
+modificqciones: correo unique mysql;
+ALTER TABLE `empleados`
+ADD UNIQUE KEY `uk_correo` (`correo`);
+
+
+servicios:
+-- Modificar la tabla de empleados para hacer el campo correo único
+ALTER TABLE `servicios`
+ADD UNIQUE KEY `uk_nombre` (`nombre`);
+
+select * from servicios;
+
+SELECT correo, COUNT(*) as cantidad
+FROM empleados
+GROUP BY correo
+HAVING COUNT(*) > 1;
+
+DELETE FROM servicios where id_servicio ;
+ALTER TABLE servicios AUTO_INCREMENT = 1;

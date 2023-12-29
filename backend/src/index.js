@@ -3,8 +3,8 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser'); // Agregamos body-parser
 
-// Configuramos el puerto a 2023
-app.set('puerto', 2023);
+// Configuramos el puerto a :
+app.set('puerto', 4000);
 
 // Middleware para registrar solicitudes en la consola (morgan)
 app.use(morgan('dev'));
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // Rutas para cada entidad (empleados, servicios, clientes, etc.)
 app.use(require('./routes/routesEmpleados.js'));
-// app.use(require('./routes/routesServicios.js'));
+app.use(require('./routes/routesServicios.js'));
 // app.use(require('./routes/routesClientes.js'));
 // app.use(require('./routes/routesTurnos.js'));
 // app.use(require('./routes/routesUsuarios.js'));
