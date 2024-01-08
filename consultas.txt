@@ -179,3 +179,9 @@ HAVING COUNT(*) > 1;
 
 DELETE FROM servicios where id_servicio ;
 ALTER TABLE servicios AUTO_INCREMENT = 1;
+
+
+mod clientes mysql
+modificqciones: correo unique mysql;
+ALTER TABLE `empleados`
+ADD UNIQUE KEY `uk_correo` (`correo`);
