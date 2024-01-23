@@ -26,7 +26,7 @@ app.use(require('./routes/routesEmpleados.js'));
 app.use(require('./routes/routesServicios.js'));
 app.use(require('./routes/routesClientes.js'));
 app.use(require('./routes/routesTurnos.js'));
-// app.use(require('./routes/routesUsuarios.js'));
+app.use(require('./routes/routesUsuarios.js'));
 
 // Iniciar el servidor
 app.listen(app.get('puerto'), () => {

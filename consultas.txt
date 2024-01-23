@@ -185,3 +185,23 @@ mod clientes mysql
 modificqciones: correo unique mysql;
 ALTER TABLE `empleados`
 ADD UNIQUE KEY `uk_correo` (`correo`);
+
+
+
+se mod bd roles con estos datos :  Crear Roles
+CREATE ROLE 'admin1';
+CREATE ROLE 'admin2';
+
+-- Asignar Privilegios al Rol 'admin1'
+GRANT ALL PRIVILEGES ON *.* TO 'admin1';
+
+-- Asignar Privilegios al Rol 'admin2'
+GRANT SELECT ON *.* TO 'admin2';
+
+CREATE USER 'usuario_admin1'@'%' IDENTIFIED BY '12345678';
+CREATE USER 'usuario_admin2'@'%' IDENTIFIED BY '87654321';
+
+
+-- Asignar Roles a Usuarios
+GRANT 'admin1' TO 'usuario_admin1';
+GRANT 'admin2' TO 'usuario_admin2';
