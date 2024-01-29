@@ -136,46 +136,5 @@ function verificarToken(req, res, next) {
     }
 }
 
-// // Endpoint para iniciar sesión (Login)
-// router.post('/login', bodyParser.json(), (req, res) => {
-//     const { user, pass } = req.body;
-
-//     // Consulta para obtener el usuario por user
-//     mysqlConnect.query('SELECT * FROM usuarios WHERE user = ?', [user], (error, resultados) => {
-//         if (error) {
-//             console.log('Error en la base de datos', error);
-//             res.status(500).json({ status: false, mensaje: "Error en la base de datos" });
-//         } else {
-//             // Verificar si se encontró un usuario con el user proporcionado
-//             if (resultados.length > 0) {
-//                 const usuario = resultados[0];
-
-//                 // Verificar la contraseña con bcrypt
-//                 if (bcrypt.compareSync(pass, usuario.pass)) {
-//                     // Generar token JWT
-//                     const token = jwt.sign({ id: usuario.id_usuario, user: usuario.user }, 'cortandoando', { expiresIn: '1h' });
-
-//                     // Enviar el token como respuesta
-//                     res.json({ status: true, mensaje: "Inicio de sesión exitoso", token });
-//                 } else {
-//                     res.json({ status: false, mensaje: "Contraseña incorrecta" });
-//                 }
-//             } else {
-//                 res.json({ status: false, mensaje: "Usuario no encontrado" });
-//             }
-//         }
-//     });
-// });
-
-// function verificarToken(req, res, next) {
-//     const bearer = req.headers['authorization'];
-//     if (typeof bearer !== 'cortandoando') {
-//         const token = bearer.split(" ")[1];
-//         req.token = token;
-//         next();
-//     } else {
-//         res.sendStatus(403);
-//     }
-// }
 
 module.exports = router;
