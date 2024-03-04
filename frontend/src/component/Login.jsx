@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { login } from '../servicios/servicios';
@@ -7,6 +6,13 @@ import { login } from '../servicios/servicios';
 const Login = () => {
     const [credentials, setCredentials] = useState({ user: '', pass: '' });
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn) {
+            window.location.href = '/dashboard'; // Redireccionar al dashboard si el usuario está autenticado
+        }
+    }, []); // Se ejecuta solo una vez al cargar el componente
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,8 +25,7 @@ const Login = () => {
             const response = await login(credentials);
             if (response.status) {
                 localStorage.setItem('token', response.token);
-                // Redireccionar a la página principal u otra página después del inicio de sesión exitoso
-                window.location.href = '/'; // Cambia la ruta según tu configuración
+                window.location.href = '/dashboard'; // Redireccionar a la página principal después del inicio de sesión exitoso
             } else {
                 setError(response.mensaje);
             }
@@ -44,10 +49,10 @@ const Login = () => {
                 </Form.Group>
                 <Button variant="primary" type="submit">Iniciar sesión</Button>
             </Form>
-            <p className="mt-3">¿No tienes una cuenta? <Link to="/registro">Regístrate</Link></p>
+            <p className="mt-3">¿No tienes una cuenta? <Link to="/registros">Regístrate</Link></p>
+            <p>¿Olvidaste tu contraseña? <Link to="/recuperar-contraseña">Recupérala aquí</Link></p>
         </Container>
     );
 };
 
 export default Login;
-

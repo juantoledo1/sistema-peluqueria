@@ -119,18 +119,66 @@ router.delete('/eliminar_usuario/:id_usuario', verificarToken, (req, res) => {
     });
 });
 
+// function verificarToken(req, res, next) {
+//     const bearer = req.headers['authorization'];
+//     if (typeof bearer !== 'cortandoando') {
+//         const token = bearer.split(" ")[1];
+//         jwt.verify(token, 'cortandoando', (error, valido) => {
+//             if (error) {
+//                 res.sendStatus(403);
+//             } else {
+//                 req.token = token;
+//                 next();
+//             }
+//         });
+//     } else {
+//         res.sendStatus(403);
+//     }
+// }
 function verificarToken(req, res, next) {
     const bearer = req.headers['authorization'];
-    if (typeof bearer !== 'cortandoando') {
+    if (typeof bearer !== 'undefined') { // Corregido: compara con 'undefined'
+      const token = bearer.split(' ')[1];
+      jwt.verify(token, 'cortandoando', (error, valido) => {
+        if (error) {
+          res.sendStatus(403);
+        } else {
+          req.token = token;
+          next();
+        }
+      });
+    } else {
+      res.sendStatus(403);
+    }
+  }
+  
+
+
+
+router.get('/obtener_usuario/:nombre_usuario', verificarToken, (req, res) => {
+    jwt.verify(req.token, 'cortandoando', (error, valido) => {
+        if (error) {
+            res.sendStatus(403);
+        } else {
+            const { nombre_usuario } = req.params;
+            mysqlConnect.query('SELECT * FROM usuarios WHERE user = ?', [nombre_usuario], (error, registros) => {
+                if (error) {
+                    console.log('Error en la base de datos', error);
+                    res.status(500).json({ status: false, mensaje: "Error en la base de datos" });
+                } else {
+                    res.json(registros);
+                }
+            });
+        }
+    });
+});
+
+function verificarToken(req, res, next) {
+    const bearer = req.headers['authorization'];
+    if (typeof bearer !== 'undefined') {
         const token = bearer.split(" ")[1];
-        jwt.verify(token, 'cortandoando', (error, valido) => {
-            if (error) {
-                res.sendStatus(403);
-            } else {
-                req.token = token;
-                next();
-            }
-        });
+        req.token = token;
+        next();
     } else {
         res.sendStatus(403);
     }
