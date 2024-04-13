@@ -1,27 +1,56 @@
-
 import React, { useState } from 'react';
-import { Container, Button, Modal, Table } from 'react-bootstrap';
+import { Container, Button, Modal, Form, Alert } from 'react-bootstrap';
 import CustomNavbar from './CustomNavbar';
 import axios from 'axios';
 
 const Clientes = () => {
     const [showAgregarModal, setShowAgregarModal] = useState(false);
-    const [showEditarModal, setShowEditarModal] = useState(false);
-    const [showEliminarModal, setShowEliminarModal] = useState(false);
-    const [showListarModal, setShowListarModal] = useState(false);
+    const [nombre, setNombre] = useState('');
+    const [apellido, setApellido] = useState('');
+    const [correo, setCorreo] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [mensaje, setMensaje] = useState('');
     const [clientes, setClientes] = useState([]);
+    const [error, setError] = useState('');
 
     const handleAgregarModal = () => setShowAgregarModal(true);
     const handleCloseAgregarModal = () => setShowAgregarModal(false);
 
-    const handleEditarModal = () => setShowEditarModal(true);
-    const handleCloseEditarModal = () => setShowEditarModal(false);
+    const handleAgregarCliente = async () => {
+        try {
+            if (!nombre || !apellido || !correo || !telefono) {
+                setError('Por favor complete todos los campos.');
+                return;
+            }
 
-    const handleEliminarModal = () => setShowEliminarModal(true);
-    const handleCloseEliminarModal = () => setShowEliminarModal(false);
+            if (!/^\d+$/.test(telefono)) {
+                setError('El teléfono debe contener solo números.');
+                return;
+            }
 
-    const handleListarModal = async () => {
-        setShowListarModal(true);
+            const response = await axios.post('http://localhost:4000/crear_cliente', {
+                nombre,
+                apellido,
+                correo,
+                telefono
+            });
+            console.log(response.data);
+            setNombre('');
+            setApellido('');
+            setCorreo('');
+            setTelefono('');
+            handleCloseAgregarModal();
+            setMensaje('El cliente se creó correctamente');
+            setError('');
+            listarClientes();
+        } catch (error) {
+            console.error('Error al agregar cliente:', error);
+            setError('Error al agregar cliente');
+            setMensaje('');
+        }
+    };
+
+    const listarClientes = async () => {
         try {
             const response = await axios.get('http://localhost:4000/listar_clientes');
             setClientes(response.data);
@@ -29,7 +58,6 @@ const Clientes = () => {
             console.error('Error al obtener la lista de clientes:', error);
         }
     };
-    const handleCloseListarModal = () => setShowListarModal(false);
 
     return (
         <>
@@ -39,18 +67,27 @@ const Clientes = () => {
                     <h2>Clientes</h2>
                     <div className="d-grid gap-2 mb-3">
                         <Button variant="success" size="lg" onClick={handleAgregarModal}>Agregar Cliente</Button>
-                        <Button variant="primary" size="lg" onClick={handleEditarModal}>Editar Cliente</Button>
-                        <Button variant="danger" size="lg" onClick={handleEliminarModal}>Eliminar Cliente</Button>
-                        <Button variant="info" size="lg" onClick={handleListarModal}>Listar Clientes</Button>
                     </div>
                 </Container>
             </div>
 
             {/* Modales */}
-            <ModalAgregarCliente show={showAgregarModal} handleClose={handleCloseAgregarModal} />
-            <ModalEditarCliente show={showEditarModal} handleClose={handleCloseEditarModal} />
-            <ModalEliminarCliente show={showEliminarModal} handleClose={handleCloseEliminarModal} />
-            <ModalListarClientes show={showListarModal} handleClose={handleCloseListarModal} clientes={clientes} />
+            <ModalAgregarCliente
+                show={showAgregarModal}
+                handleClose={handleCloseAgregarModal}
+                handleAgregarCliente={handleAgregarCliente}
+                nombre={nombre}
+                setNombre={setNombre}
+                apellido={apellido}
+                setApellido={setApellido}
+                correo={correo}
+                setCorreo={setCorreo}
+                telefono={telefono}
+                setTelefono={setTelefono}
+                error={error}
+            />
+            {mensaje && <Alert variant="success">{mensaje}</Alert>}
+            {error && <Alert variant="danger">{error}</Alert>}
         </>
     );
 };
@@ -58,94 +95,72 @@ const Clientes = () => {
 export default Clientes;
 
 // Componente ModalAgregarCliente para agregar un nuevo cliente
-const ModalAgregarCliente = ({ show, handleClose }) => {
-    // Aquí iría el formulario para agregar un nuevo cliente
+const ModalAgregarCliente = ({
+    show,
+    handleClose,
+    handleAgregarCliente,
+    nombre,
+    setNombre,
+    apellido,
+    setApellido,
+    correo,
+    setCorreo,
+    telefono,
+    setTelefono,
+    error
+}) => {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Agregar Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {/* Aquí iría el formulario para agregar un nuevo cliente */}
+                <Form>
+                    <Form.Group className="mb-3" controlId="formNombre">
+                        <Form.Label>Nombre</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingrese el nombre"
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formApellido">
+                        <Form.Label>Apellido</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingrese el apellido"
+                            value={apellido}
+                            onChange={(e) => setApellido(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formCorreo">
+                        <Form.Label>Correo</Form.Label>
+                        <Form.Control
+                            type="email"
+                            placeholder="Ingrese el correo"
+                            value={correo}
+                            onChange={(e) => setCorreo(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formTelefono">
+                        <Form.Label>Teléfono</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingrese el teléfono"
+                            value={telefono}
+                            onChange={(e) => setTelefono(e.target.value)}
+                        />
+                    </Form.Group>
+                </Form>
+                {error && <p className="text-danger">{error}</p>}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-                <Button variant="primary" onClick={handleClose}>Guardar</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-};
-
-// Componente ModalEditarCliente para editar un cliente existente
-const ModalEditarCliente = ({ show, handleClose }) => {
-    // Aquí iría el formulario para editar un cliente
-    return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Editar Cliente</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {/* Aquí iría el formulario para editar un cliente */}
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-                <Button variant="primary" onClick={handleClose}>Guardar Cambios</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-};
-
-// Componente ModalEliminarCliente para eliminar un cliente
-const ModalEliminarCliente = ({ show, handleClose }) => {
-    return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Eliminar Cliente</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                ¿Estás seguro de que quieres eliminar este cliente?
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-                <Button variant="danger" onClick={handleClose}>Eliminar</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-};
-
-// Componente ModalListarClientes para mostrar la lista de clientes
-const ModalListarClientes = ({ show, handleClose, clientes }) => {
-    return (
-        <Modal show={show} onHide={handleClose} className="modal-xl"> {/* Agrega la clase modal-xl para hacer el modal más ancho */}
-            <Modal.Header closeButton>
-                <Modal.Title>Listar Clientes</Modal.Title>
-            </Modal.Header>
-            <Modal.Body style={{ maxHeight: 'calc(100vh - 210px)', overflowY: 'auto' }}>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {clientes.map(cliente => (
-                            <tr key={cliente.id_cliente}>
-                                <td>{cliente.id_cliente}</td>
-                                <td>{cliente.nombre}</td>
-                                <td>{cliente.apellido}</td>
-                                <td>{cliente.correo}</td>
-                                <td>{cliente.telefono}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+                <Button variant="primary" onClick={handleAgregarCliente}>Guardar</Button>
             </Modal.Footer>
         </Modal>
     );
