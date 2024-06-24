@@ -963,7 +963,7 @@ const ModalListarClientes = ({ show, handleClose, clientes, handleConfirmarElimi
                 <Modal.Title>Listado de Clientes</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Table striped bordered hover>
+                <Table striped bordered hover responsive className="table-responsive">
                     <thead>
                         <tr>
                             <th>ID</th> {/* Asegúrate de tener esta columna aquí */}
@@ -982,7 +982,7 @@ const ModalListarClientes = ({ show, handleClose, clientes, handleConfirmarElimi
                                 <td>{cliente.apellido}</td>
                                 <td>{cliente.correo}</td>
                                 <td>{cliente.telefono}</td>
-                                <td>
+                                <td className="d-flex justify-content-between align-items-center">
                                     <Button variant="danger" onClick={() => handleConfirmarEliminarModal(cliente)}>Eliminar</Button>
                                     {/* Agregar botón para modificar cliente */}
                                     <Button variant="info" onClick={() => handleModificarCliente(cliente)}>Modificar</Button>
