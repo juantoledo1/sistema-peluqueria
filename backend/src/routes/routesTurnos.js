@@ -4,7 +4,7 @@ const mysqlConnect = require('../database/database');
 
 // Listar todos los turnos con detalles
 router.get('/listar_turnos', (req, res) => {
-    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, clientes.nombre AS nombre_cliente, clientes.apellido AS apellido_cliente, servicios.nombre AS nombre_servicio, servicios.precio, empleados.nombre AS nombre_empleado FROM turnos INNER JOIN clientes ON turnos.id_cliente = clientes.id_cliente INNER JOIN servicios ON turnos.id_servicio = servicios.id_servicio INNER JOIN empleados ON turnos.id_empleado = empleados.id_empleado', (error, registros) => {
+    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, clientes.nombre AS nombre_cliente, clientes.apellido AS apellido_cliente, servicios.nombre AS nombre_servicio, servicios.precio, empleados.nombre AS nombre_empleado , empleados.apellido AS apellido_empleado FROM turnos INNER JOIN clientes ON turnos.id_cliente = clientes.id_cliente INNER JOIN servicios ON turnos.id_servicio = servicios.id_servicio INNER JOIN empleados ON turnos.id_empleado = empleados.id_empleado', (error, registros) => {
         if (error) {
             console.log('Error en la base de datos', error);
             res.status(500).json({ status: false, mensaje: "Error en la base de datos" });
@@ -17,7 +17,7 @@ router.get('/listar_turnos', (req, res) => {
 // Listar un turno por ID con detalles
 router.get('/listar_turno/:id', (req, res) => {
     const { id } = req.params;
-    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, clientes.nombre AS nombre_cliente, clientes.apellido AS apellido_cliente, servicios.nombre AS nombre_servicio, empleados.nombre AS nombre_empleado FROM turnos INNER JOIN clientes ON turnos.id_cliente = clientes.id_cliente INNER JOIN servicios ON turnos.id_servicio = servicios.id_servicio INNER JOIN empleados ON turnos.id_empleado = empleados.id_empleado WHERE turnos.id_turno = ?', [id], (error, registros) => {
+    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, clientes.nombre AS nombre_cliente, clientes.apellido AS apellido_cliente, servicios.nombre AS nombre_servicio, empleados.nombre AS nombre_empleado, empleados.apellido AS apellido_empleado, servicios.precio FROM turnos INNER JOIN clientes ON turnos.id_cliente = clientes.id_cliente INNER JOIN servicios ON turnos.id_servicio = servicios.id_servicio INNER JOIN empleados ON turnos.id_empleado = empleados.id_empleado WHERE turnos.id_turno = ?', [id], (error, registros) => {
         if (error) {
             console.log('Error en la base de datos', error);
             res.status(500).json({ status: false, mensaje: "Error en la base de datos" });
@@ -34,7 +34,7 @@ router.get('/listar_turno/:id', (req, res) => {
 // Listar los turnos de un cliente por su ID
 router.get('/listar_turnos_cliente/:id_cliente', (req, res) => {
     const { id_cliente } = req.params;
-    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, empleados.nombre AS empleado_nombre, servicios.nombre AS servicio_nombre, servicios.precio ' +
+    mysqlConnect.query('SELECT turnos.id_turno, turnos.fecha, turnos.hora, empleados.nombre AS empleado_nombre,empleados.apellido AS empleado_apellido, servicios.nombre AS servicio_nombre, servicios.precio ' +
                       'FROM turnos ' +
                       'INNER JOIN empleados ON turnos.id_empleado = empleados.id_empleado ' +
                       'INNER JOIN servicios ON turnos.id_servicio = servicios.id_servicio ' +

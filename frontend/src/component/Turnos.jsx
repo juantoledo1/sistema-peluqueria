@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Modal, Table, Alert } from 'react-bootstrap';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
@@ -39,21 +37,31 @@ const Turnos = () => {
   const handleCloseListarTurnosModal = () => setShowListarTurnosModal(false);
 
   // Mapeo de los eventos con detalles del turno
-  const events = turnos.map((turno) => ({
-    id: turno.id_turno,
-    title: `${turno.servicio} con ${turno.empleado}`,
-    start: new Date(turno.fecha), // Convertir la fecha a objeto Date
-    end: new Date(moment(turno.fecha).add(1, 'hour')), // Finaliza 1 hora después del inicio (ajustable según tu lógica)
-    details: {
+  const events = turnos.map((turno) => {
+    const [hour, minute] = turno.hora.split(':');
+    const start = new Date(turno.fecha);
+    start.setHours(hour);
+    start.setMinutes(minute);
+    
+    const end = new Date(start);
+    end.setHours(start.getHours() + 1);
+
+    return {
       id: turno.id_turno,
-      cliente: `${turno.nombre_cliente} ${turno.apellido_cliente}`, // Combinar nombre y apellido del cliente
-      empleado: `${turno.nombre_empleado} ${turno.apellido_empleado}`, // Combinar nombre y apellido del empleado
-      servicio: turno.nombre_servicio, // Usar nombre del servicio
-      fecha: moment(turno.fecha).format('YYYY-MM-DD'),
-      hora: turno.hora,
-      precio:turno.precio,
-    },
-  }));
+      title: `${turno.nombre_servicio} con ${turno.nombre_empleado} ${turno.apellido_empleado}`, // Mostrar servicio y empleado en el título
+      start,
+      end,
+      details: {
+        id: turno.id_turno,
+        cliente: `${turno.nombre_cliente} ${turno.apellido_cliente}`, // Combinar nombre y apellido del cliente
+        empleado: `${turno.nombre_empleado} ${turno.apellido_empleado}`, // Combinar nombre y apellido del empleado
+        servicio: turno.nombre_servicio, // Usar nombre del servicio
+        fecha: moment(turno.fecha).format('YYYY-MM-DD'),
+        hora: turno.hora,
+        precio: turno.precio,
+      },
+    };
+  });
 
   // Componente para mostrar los detalles del turno seleccionado
   const DetallesTurno = ({ turno }) => (
@@ -66,11 +74,11 @@ const Turnos = () => {
           <th>Servicio</th>
           <th>Fecha</th>
           <th>Hora</th>
-          <th>precio</th>
+          <th>Precio</th>
         </tr>
       </thead>
       <tbody>
-        <tr key={turno.id}>
+        <tr key={turno.details.id}>
           <td>{turno.details.id}</td>
           <td>{turno.details.cliente}</td>
           <td>{turno.details.empleado}</td>
@@ -84,7 +92,7 @@ const Turnos = () => {
   );
 
   // Componente para mostrar los turnos en el modal
-  const ModalListarTurnos = ({ show, handleClose, turnos, events }) => (
+  const ModalListarTurnos = ({ show, handleClose, events }) => (
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Listado de Turnos</Modal.Title>
@@ -100,8 +108,9 @@ const Turnos = () => {
             onSelectEvent={(event) => setSelectedTurno(event)} // Al seleccionar un evento, actualizar el turno seleccionado
           />
         </div>
-        {selectedTurno && <DetallesTurno turno={selectedTurno} />}
-        {!selectedTurno && (
+        {selectedTurno ? (
+          <DetallesTurno turno={selectedTurno} />
+        ) : (
           <Alert variant="info">
             Seleccione un turno del calendario para ver los detalles.
           </Alert>
@@ -128,7 +137,6 @@ const Turnos = () => {
       <ModalListarTurnos
         show={showListarTurnosModal}
         handleClose={handleCloseListarTurnosModal}
-        turnos={turnos}
         events={events}
       />
       {mensaje && <Alert variant="success" onClose={() => setMensaje('')} dismissible>{mensaje}</Alert>}
