@@ -1,50 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Modal, Form, Alert, Table } from 'react-bootstrap';
+import { Container, Button, Modal, Form, Alert, Table, Toast } from 'react-bootstrap';
 import CustomNavbar from './CustomNavbar';
 import axios from 'axios';
 
 const Empleados = () => {
-    const [showAgregarModal, setShowAgregarModal] = useState(false);
-    const [showListarModal, setShowListarModal] = useState(false);
-    const [showEliminarModal, setShowEliminarModal] = useState(false);
-    const [showModificarModal, setShowModificarModal] = useState(false);
+    const [showAgregarEmpleadoModal, setShowAgregarEmpleadoModal] = useState(false);
+    const [showListarEmpleadosModal, setShowListarEmpleadosModal] = useState(false);
+    const [showConfirmarEliminarModal, setShowConfirmarEliminarModal] = useState(false);
+    const [showModificarEmpleadoModal, setShowModificarEmpleadoModal] = useState(false);
+    const [mensaje, setMensaje] = useState('');
+    const [error, setError] = useState('');
+    const [empleados, setEmpleados] = useState([]);
+    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [correo, setCorreo] = useState('');
     const [telefono, setTelefono] = useState('');
-    const [mensaje, setMensaje] = useState('');
-    const [empleados, setEmpleados] = useState([]);
-    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
-    const [error, setError] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
 
     useEffect(() => {
         listarEmpleados();
     }, []);
 
-    const handleAgregarModal = () => setShowAgregarModal(true);
-    const handleCloseAgregarModal = () => setShowAgregarModal(false);
+    const handleAgregarEmpleadoModal = () => setShowAgregarEmpleadoModal(true);
+    const handleCloseAgregarEmpleadoModal = () => setShowAgregarEmpleadoModal(false);
 
-    const handleListarModal = () => setShowListarModal(true);
-    const handleCloseListarModal = () => setShowListarModal(false);
+    const handleListarEmpleadosModal = () => setShowListarEmpleadosModal(true);
+    const handleCloseListarEmpleadosModal = () => setShowListarEmpleadosModal(false);
 
-    const handleEliminarModal = (empleado) => {
+    const handleConfirmarEliminarModal = (empleado) => {
         setEmpleadoSeleccionado(empleado);
-        setShowEliminarModal(true);
+        setShowConfirmarEliminarModal(true);
     };
-    const handleCloseEliminarModal = () => setShowEliminarModal(false);
 
-    const handleModificarModal = (empleado) => {
-        setEmpleadoSeleccionado(empleado);
-        setShowModificarModal(true);
+    const handleCloseConfirmarEliminarModal = () => {
+        setEmpleadoSeleccionado(null);
+        setShowConfirmarEliminarModal(false);
     };
-    const handleCloseModificarModal = () => setShowModificarModal(false);
+
+    const handleModificarEmpleadoModal = (empleado) => {
+        setEmpleadoSeleccionado(empleado);
+        setNombre(empleado.nombre);
+        setApellido(empleado.apellido);
+        setCorreo(empleado.correo);
+        setTelefono(empleado.telefono);
+        setShowModificarEmpleadoModal(true);
+    };
+
+    const handleCloseModificarEmpleadoModal = () => {
+        setEmpleadoSeleccionado(null);
+        setNombre('');
+        setApellido('');
+        setCorreo('');
+        setTelefono('');
+        setShowModificarEmpleadoModal(false);
+    };
 
     const handleAgregarEmpleado = async () => {
-        if (!nombre || !apellido || !correo || !telefono) {
-            setError('Todos los campos son obligatorios');
-            return;
-        }
-
         try {
             const response = await axios.post('http://localhost:4000/crear_empleado', {
                 nombre,
@@ -57,9 +70,9 @@ const Empleados = () => {
             setApellido('');
             setCorreo('');
             setTelefono('');
-            handleCloseAgregarModal();
-            setMensaje('El empleado se creó correctamente');
-            setError('');
+            handleCloseAgregarEmpleadoModal();
+            setToastMessage('El empleado se creó correctamente');
+            setShowToast(true);
             listarEmpleados();
         } catch (error) {
             console.error('Error al agregar empleado:', error);
@@ -77,13 +90,14 @@ const Empleados = () => {
         }
     };
 
-    const eliminarEmpleado = async (id) => {
+    const handleEliminarEmpleado = async () => {
         try {
-            const response = await axios.delete(`http://localhost:4000/eliminar_empleado/${id}`);
+            const id_empleado = empleadoSeleccionado.id_empleado;
+            const response = await axios.delete(`http://localhost:4000/eliminar_empleado/${id_empleado}`);
             console.log(response.data);
-            handleCloseEliminarModal();
-            setMensaje('El empleado se eliminó correctamente');
-            setError('');
+            setToastMessage('El empleado se eliminó correctamente');
+            setShowToast(true);
+            handleCloseConfirmarEliminarModal();
             listarEmpleados();
         } catch (error) {
             console.error('Error al eliminar empleado:', error);
@@ -92,27 +106,18 @@ const Empleados = () => {
         }
     };
 
-    const modificarEmpleado = async (id) => {
-        if (!nombre || !apellido || !correo || !telefono) {
-            setError('Todos los campos son obligatorios');
-            return;
-        }
-
+    const handleModificarEmpleado = async () => {
         try {
-            const response = await axios.put(`http://localhost:4000/modificar_empleado/${id}`, {
+            const response = await axios.put(`http://localhost:4000/actualizar_empleado/${empleadoSeleccionado.id_empleado}`, {
                 nombre,
                 apellido,
                 correo,
                 telefono
             });
             console.log(response.data);
-            setNombre('');
-            setApellido('');
-            setCorreo('');
-            setTelefono('');
-            handleCloseModificarModal();
-            setMensaje('El empleado se modificó correctamente');
-            setError('');
+            setToastMessage('El empleado se modificó correctamente');
+            setShowToast(true);
+            handleCloseModificarEmpleadoModal();
             listarEmpleados();
         } catch (error) {
             console.error('Error al modificar empleado:', error);
@@ -121,6 +126,17 @@ const Empleados = () => {
         }
     };
 
+    useEffect(() => {
+        let timer;
+        if (showToast) {
+            timer = setTimeout(() => {
+                setShowToast(false);
+                setToastMessage('');
+            }, 5000); // 5000 milisegundos = 5 segundos
+        }
+        return () => clearTimeout(timer);
+    }, [showToast]);
+
     return (
         <>
             <CustomNavbar />
@@ -128,18 +144,16 @@ const Empleados = () => {
                 <Container>
                     <h2>Empleados</h2>
                     <div className="d-grid gap-2 mb-3">
-                        <Button variant="success" size="lg" onClick={handleAgregarModal}>Agregar Empleado</Button>
-                        <Button variant="info" size="lg" onClick={handleListarModal}>Listar Empleados</Button>
-                        <Button variant="danger" size="lg" onClick={() => handleEliminarModal(empleadoSeleccionado)}>Eliminar Empleado</Button>
-                        <Button variant="warning" size="lg" onClick={() => handleModificarModal(empleadoSeleccionado)}>Modificar Empleado</Button>
+                        <Button variant="success" size="lg" onClick={handleAgregarEmpleadoModal}>Agregar Empleado</Button>
+                        <Button variant="info" size="lg" onClick={handleListarEmpleadosModal}>Listar Empleados</Button>
                     </div>
                 </Container>
             </div>
 
             {/* Modales */}
             <ModalAgregarEmpleado
-                show={showAgregarModal}
-                handleClose={handleCloseAgregarModal}
+                show={showAgregarEmpleadoModal}
+                handleClose={handleCloseAgregarEmpleadoModal}
                 handleAgregarEmpleado={handleAgregarEmpleado}
                 nombre={nombre}
                 setNombre={setNombre}
@@ -152,20 +166,22 @@ const Empleados = () => {
                 error={error}
             />
             <ModalListarEmpleados
-                show={showListarModal}
-                handleClose={handleCloseListarModal}
+                show={showListarEmpleadosModal}
+                handleClose={handleCloseListarEmpleadosModal}
                 empleados={empleados}
+                handleConfirmarEliminarModal={handleConfirmarEliminarModal}
+                handleModificarEmpleadoModal={handleModificarEmpleadoModal}
             />
-            <ModalEliminarEmpleado
-                show={showEliminarModal}
-                handleClose={handleCloseEliminarModal}
+            <ModalConfirmarEliminarEmpleado
+                show={showConfirmarEliminarModal}
+                handleClose={handleCloseConfirmarEliminarModal}
                 empleadoSeleccionado={empleadoSeleccionado}
-                eliminarEmpleado={eliminarEmpleado}
+                handleEliminarEmpleado={handleEliminarEmpleado}
             />
             <ModalModificarEmpleado
-                show={showModificarModal}
-                handleClose={handleCloseModificarModal}
-                empleadoSeleccionado={empleadoSeleccionado}
+                show={showModificarEmpleadoModal}
+                handleClose={handleCloseModificarEmpleadoModal}
+                handleModificarEmpleado={handleModificarEmpleado}
                 nombre={nombre}
                 setNombre={setNombre}
                 apellido={apellido}
@@ -175,10 +191,26 @@ const Empleados = () => {
                 telefono={telefono}
                 setTelefono={setTelefono}
                 error={error}
-                modificarEmpleado={modificarEmpleado}
             />
-            {mensaje && <Alert variant="success">{mensaje}</Alert>}
-            {error && <Alert variant="danger">{error}</Alert>}
+            
+            {/* Toast para mensajes */}
+            <Toast
+                show={showToast}
+                onClose={() => setShowToast(false)}
+                className="position-fixed bottom-0 start-50 translate-middle-x"
+                style={{ zIndex: 9999 }}
+                delay={5000} // Duración del toast en milisegundos
+                autohide
+            >
+                <Toast.Header closeButton={false}>
+                    <strong className="me-auto">Mensaje</strong>
+                </Toast.Header>
+                <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
+
+            {/* Mensajes de Alerta */}
+            {mensaje && <Alert variant="success" onClose={() => setMensaje('')} dismissible>{mensaje}</Alert>}
+            {error && <Alert variant="danger" onClose={() => setError('')} dismissible>{error}</Alert>}
         </>
     );
 };
@@ -258,31 +290,36 @@ const ModalAgregarEmpleado = ({
 };
 
 // Componente ModalListarEmpleados para mostrar todos los empleados
-const ModalListarEmpleados = ({ show, handleClose, empleados }) => {
+const ModalListarEmpleados = ({ show, handleClose, empleados, handleConfirmarEliminarModal, handleModificarEmpleadoModal }) => {
     return (
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Listado de Empleados</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Table striped bordered hover>
+                <Table striped bordered hover responsive className="table-responsive">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>ID</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
                             <th>Correo</th>
                             <th>Teléfono</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {empleados.map((empleado, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
+                        {empleados.map((empleado) => (
+                            <tr key={empleado.id_empleado}>
+                                <td>{empleado.id_empleado}</td>
                                 <td>{empleado.nombre}</td>
                                 <td>{empleado.apellido}</td>
                                 <td>{empleado.correo}</td>
                                 <td>{empleado.telefono}</td>
+                                <td>
+                                    <Button variant="warning" onClick={() => handleModificarEmpleadoModal(empleado)}>Modificar</Button>{' '}
+                                    <Button variant="danger" onClick={() => handleConfirmarEliminarModal(empleado)}>Eliminar</Button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -295,29 +332,29 @@ const ModalListarEmpleados = ({ show, handleClose, empleados }) => {
     );
 };
 
-// Componente ModalEliminarEmpleado para eliminar un empleado por su ID
-const ModalEliminarEmpleado = ({ show, handleClose, empleadoSeleccionado, eliminarEmpleado }) => {
+// Componente ModalConfirmarEliminarEmpleado para confirmar la eliminación de un empleado
+const ModalConfirmarEliminarEmpleado = ({ show, handleClose, empleadoSeleccionado, handleEliminarEmpleado }) => {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Empleado</Modal.Title>
+                <Modal.Title>Confirmar Eliminación</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>¿Estás seguro que deseas eliminar al empleado {empleadoSeleccionado && empleadoSeleccionado.nombre}?</p>
+                <p>¿Estás seguro de eliminar al empleado {empleadoSeleccionado?.nombre} {empleadoSeleccionado?.apellido}?</p>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-                <Button variant="danger" onClick={() => eliminarEmpleado(empleadoSeleccionado.id)}>Eliminar</Button>
+                <Button variant="danger" onClick={handleEliminarEmpleado}>Eliminar</Button>
             </Modal.Footer>
         </Modal>
     );
 };
 
-// Componente ModalModificarEmpleado para modificar un empleado por su ID
+// Componente ModalModificarEmpleado para modificar un empleado existente
 const ModalModificarEmpleado = ({
     show,
     handleClose,
-    empleadoSeleccionado,
+    handleModificarEmpleado,
     nombre,
     setNombre,
     apellido,
@@ -326,8 +363,7 @@ const ModalModificarEmpleado = ({
     setCorreo,
     telefono,
     setTelefono,
-    error,
-    modificarEmpleado
+    error
 }) => {
     return (
         <Modal show={show} onHide={handleClose}>
@@ -380,10 +416,8 @@ const ModalModificarEmpleado = ({
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-                <Button variant="primary" onClick={() => modificarEmpleado(empleadoSeleccionado.id)}>Guardar</Button>
+                <Button variant="primary" onClick={handleModificarEmpleado}>Guardar Cambios</Button>
             </Modal.Footer>
         </Modal>
     );
 };
-
-
