@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Modal, Form, Alert, Table } from 'react-bootstrap';
+import { Container, Button, Modal, Form, Alert, Table, Toast } from 'react-bootstrap';
 import CustomNavbar from './CustomNavbar';
 import axios from 'axios';
 
@@ -24,6 +24,8 @@ const Clientes = () => {
     const [idServicio, setIdServicio] = useState('');
     const [empleados, setEmpleados] = useState([]);
     const [servicios, setServicios] = useState([]);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
 
     useEffect(() => {
         listarClientes();
@@ -93,7 +95,8 @@ const Clientes = () => {
             setCorreo('');
             setTelefono('');
             handleCloseAgregarClienteModal();
-            setMensaje('El cliente se creó correctamente');
+            setToastMessage('El cliente se creó correctamente');
+            setShowToast(true);
             setError('');
             listarClientes();
         } catch (error) {
@@ -135,7 +138,8 @@ const Clientes = () => {
             const id_cliente = clienteSeleccionado.id_cliente;
             const response = await axios.delete(`http://localhost:4000/eliminar_cliente/${id_cliente}`);
             console.log(response.data);
-            setMensaje('El cliente se eliminó correctamente');
+            setToastMessage('El cliente se eliminó correctamente');
+            setShowToast(true);
             setError('');
             handleCloseConfirmarEliminarModal();
             listarClientes();
@@ -155,7 +159,8 @@ const Clientes = () => {
                 telefono
             });
             console.log(response.data);
-            setMensaje('El cliente se modificó correctamente');
+            setToastMessage('El cliente se modificó correctamente');
+            setShowToast(true);
             setError('');
             handleCloseModificarClienteModal();
             listarClientes();
@@ -184,7 +189,8 @@ const Clientes = () => {
             if (response.data.status) {
                 setShowCrearTurnoModal(false);
                 setError('');
-                setMensaje('El turno se creó correctamente.');
+                setToastMessage('El turno se creó correctamente.');
+                setShowToast(true);
                 listarClientes(); // Refrescar la lista de clientes si es necesario
             } else {
                 setError(response.data.mensaje);
@@ -194,6 +200,17 @@ const Clientes = () => {
             setError('Error al crear el turno.');
         }
     };
+
+    useEffect(() => {
+        let timer;
+        if (showToast) {
+            timer = setTimeout(() => {
+                setShowToast(false);
+                setToastMessage('');
+            }, 5000); // 5000 milisegundos = 5 segundos
+        }
+        return () => clearTimeout(timer);
+    }, [showToast]);
 
     return (
         <>
@@ -265,6 +282,21 @@ const Clientes = () => {
                 setIdServicio={setIdServicio}
                 error={error}
             />
+                
+                <Toast
+                show={showToast}
+                onClose={() => setShowToast(false)}
+                className="position-fixed bottom-0 start-50 translate-middle-x"
+                style={{ zIndex: 9999 }}
+                delay={5000} // Duración del toast en milisegundos
+                autohide
+            >
+                <Toast.Header closeButton={false}>
+                    <strong className="me-auto">Mensaje</strong>
+                </Toast.Header>
+                <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
+
             {mensaje && <Alert variant="success" onClose={() => setMensaje('')} dismissible>{mensaje}</Alert>}
             {error && <Alert variant="danger" onClose={() => setError('')} dismissible>{error}</Alert>}
         </>
