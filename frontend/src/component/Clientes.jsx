@@ -9,13 +9,14 @@ const Clientes = () => {
     const [showConfirmarEliminarModal, setShowConfirmarEliminarModal] = useState(false);
     const [showModificarClienteModal, setShowModificarClienteModal] = useState(false);
     const [showCrearTurnoModal, setShowCrearTurnoModal] = useState(false); // Nuevo estado para el modal de turnos
-    const [id, setId] = useState('');
+    const [idCliente, setIdCliente] = useState('');
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [correo, setCorreo] = useState('');
     const [telefono, setTelefono] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [clientes, setClientes] = useState([]);
+    const [clientesFiltrados, setClientesFiltrados] = useState([]);
     const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
     const [error, setError] = useState('');
     const [fecha, setFecha] = useState('');
@@ -26,12 +27,25 @@ const Clientes = () => {
     const [servicios, setServicios] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [busqueda, setBusqueda] = useState('');
 
     useEffect(() => {
         listarClientes();
         listarEmpleados();
         listarServicios();
     }, []);
+
+    useEffect(() => {
+        if (busqueda.trim() === '') {
+            setClientesFiltrados(clientes);
+        } else {
+            const filtrados = clientes.filter(cliente =>
+                cliente.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+                cliente.apellido.toLowerCase().includes(busqueda.toLowerCase())
+            );
+            setClientesFiltrados(filtrados);
+        }
+    }, [busqueda, clientes]);
 
     const handleAgregarClienteModal = () => setShowAgregarClienteModal(true);
     const handleCloseAgregarClienteModal = () => setShowAgregarClienteModal(false);
@@ -106,14 +120,16 @@ const Clientes = () => {
         }
     };
 
-    const listarClientes = async () => {
+     const listarClientes = async () => {
         try {
             const response = await axios.get('http://localhost:4000/listar_clientes');
             setClientes(response.data);
+            setClientesFiltrados(response.data);
         } catch (error) {
             console.error('Error al obtener la lista de clientes:', error);
         }
     };
+
 
     const listarEmpleados = async () => {
         try {
@@ -243,7 +259,9 @@ const Clientes = () => {
             <ModalListarClientes
                 show={showListarClientesModal}
                 handleClose={handleCloseListarClientesModal}
-                clientes={clientes}
+                clientes={clientesFiltrados}
+                busqueda={busqueda}
+                setBusqueda={setBusqueda}
                 handleConfirmarEliminarModal={handleConfirmarEliminarModal}
                 handleModificarClienteModal={handleModificarClienteModal}
                 handleCrearTurnoModal={handleCrearTurnoModal} // Nuevo manejador para mostrar el modal de turnos
@@ -286,7 +304,7 @@ const Clientes = () => {
                 <Toast
                 show={showToast}
                 onClose={() => setShowToast(false)}
-                className="position-fixed bottom-0 start-50 translate-middle-x"
+                className="position-fixed top-0 start-50 translate-middle-x"
                 style={{ zIndex: 9999 }}
                 delay={5000} // Duración del toast en milisegundos
                 autohide
@@ -378,13 +396,22 @@ const ModalAgregarCliente = ({
 };
 
 // Componente ModalListarClientes para mostrar todos los clientes
-const ModalListarClientes = ({ show, handleClose, clientes, handleConfirmarEliminarModal, handleModificarClienteModal, handleCrearTurnoModal }) => {
+const ModalListarClientes = ({ show, handleClose, clientes, busqueda, setBusqueda, handleConfirmarEliminarModal, handleModificarClienteModal, handleCrearTurnoModal }) => {
     return (
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Listado de Clientes</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            <Form.Group controlId="busqueda">
+                    <Form.Label>Buscar Cliente</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre o apellido"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </Form.Group>
                 <Table striped bordered hover responsive className="table-responsive">
                     <thead>
                         <tr>
