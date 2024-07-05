@@ -233,7 +233,7 @@ const Clientes = () => {
             {/* <CustomNavbar /> */}
             <div className="bg-dark text-light vh-100 d-flex align-items-center justify-content-center">
                 <Container>
-                    <h2>Clientes</h2>
+                    <h2 className='text-center' >Clientes</h2>
                     <div className="d-grid gap-2 mb-3">
                         <Button variant="success" size="lg" onClick={handleAgregarClienteModal}>Agregar Cliente</Button>
                         <Button variant="info" size="lg" onClick={handleListarClientesModal}>Listar Clientes</Button>
@@ -304,7 +304,7 @@ const Clientes = () => {
                 <Toast
                 show={showToast}
                 onClose={() => setShowToast(false)}
-                className="position-fixed top-0 start-50 translate-middle-x"
+                className="position-fixed top-0 start-50 translate-middle-x bg-black text-light"
                 style={{ zIndex: 9999 }}
                 delay={5000} // Duración del toast en milisegundos
                 autohide

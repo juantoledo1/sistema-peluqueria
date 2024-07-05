@@ -190,7 +190,7 @@ const Servicios = () => {
             <Toast
                 show={showToast}
                 onClose={() => setShowToast(false)}
-                className="position-fixed top-0 start-50 translate-middle-x"
+                className="position-fixed top-0 start-50 translate-middle-x bg-black text-light"
                 style={{ zIndex: 9999 }}
                 delay={5000} // Duración del toast en milisegundos
                 autohide
