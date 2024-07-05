@@ -4,7 +4,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import CustomNavbar from './CustomNavbar';
+// import CustomNavbar from './CustomNavbar';
 
 const localizer = momentLocalizer(moment);
 
@@ -124,7 +124,7 @@ const Turnos = () => {
 
   return (
     <>
-      <CustomNavbar />
+      {/* <CustomNavbar /> */}
       <div className="bg-dark text-light vh-100 d-flex align-items-center justify-content-center">
         <Container>
           <h2>Turnos</h2>

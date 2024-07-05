@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Modal, Form, Alert, Table, Toast } from 'react-bootstrap';
-import CustomNavbar from './CustomNavbar';
+// import CustomNavbar from './CustomNavbar';
 import axios from 'axios';
 
 const Clientes = () => {
@@ -230,7 +230,7 @@ const Clientes = () => {
 
     return (
         <>
-            <CustomNavbar />
+            {/* <CustomNavbar /> */}
             <div className="bg-dark text-light vh-100 d-flex align-items-center justify-content-center">
                 <Container>
                     <h2>Clientes</h2>
