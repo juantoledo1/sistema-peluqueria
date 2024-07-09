@@ -4,7 +4,7 @@ import { Navbar, Nav, Button } from 'react-bootstrap';
 
 const CustomNavbar = ({ handleLogout }) => {
     return (
-        <Navbar bg="info" expand="lg">
+        <Navbar className='' bg="info" expand="lg" >
             <Navbar.Brand as={Link} to="/">Juan Toledo Peluquero</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">

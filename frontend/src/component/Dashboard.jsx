@@ -16,7 +16,7 @@ const Dashboard = () => {
                 {/* Main Content */}
                 <Col xs={12} md={9} className="bg-black text-light py-1">
                     {/* Navbar */}
-                    <CustomNavbar />
+                    <CustomNavbar className= '' />
 
                     {/* Content Area */}
                     <div className="flex-grow-1 px-3">
