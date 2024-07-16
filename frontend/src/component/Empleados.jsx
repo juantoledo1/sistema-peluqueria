@@ -11,6 +11,7 @@ const Empleados = () => {
     const [mensaje, setMensaje] = useState('');
     const [error, setError] = useState('');
     const [empleados, setEmpleados] = useState([]);
+    const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
     const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
@@ -18,10 +19,24 @@ const Empleados = () => {
     const [telefono, setTelefono] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [busqueda, setBusqueda] = useState('');
+
 
     useEffect(() => {
         listarEmpleados();
     }, []);
+
+    useEffect(() => {
+        if (busqueda.trim() === '') {
+            setEmpleadosFiltrados(empleados);
+        } else {
+            const filtrados = empleados.filter(empleado =>
+                empleado.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+                empleado.apellido.toLowerCase().includes(busqueda.toLowerCase())
+            );
+            setEmpleadosFiltrados(filtrados);
+        }
+    }, [busqueda, empleados]);
 
     const handleAgregarEmpleadoModal = () => setShowAgregarEmpleadoModal(true);
     const handleCloseAgregarEmpleadoModal = () => setShowAgregarEmpleadoModal(false);
@@ -85,6 +100,7 @@ const Empleados = () => {
         try {
             const response = await axios.get('http://localhost:4000/listar_empleados');
             setEmpleados(response.data);
+            setEmpleadosFiltrados(response.data);
         } catch (error) {
             console.error('Error al obtener la lista de empleados:', error);
         }
@@ -168,7 +184,9 @@ const Empleados = () => {
             <ModalListarEmpleados
                 show={showListarEmpleadosModal}
                 handleClose={handleCloseListarEmpleadosModal}
-                empleados={empleados}
+                empleados={empleadosFiltrados}
+                busqueda={busqueda}
+                setBusqueda={setBusqueda}
                 handleConfirmarEliminarModal={handleConfirmarEliminarModal}
                 handleModificarEmpleadoModal={handleModificarEmpleadoModal}
             />
@@ -290,13 +308,22 @@ const ModalAgregarEmpleado = ({
 };
 
 // Componente ModalListarEmpleados para mostrar todos los empleados
-const ModalListarEmpleados = ({ show, handleClose, empleados, handleConfirmarEliminarModal, handleModificarEmpleadoModal }) => {
+const ModalListarEmpleados = ({ show, handleClose, empleados, busqueda, setBusqueda, handleConfirmarEliminarModal, handleModificarEmpleadoModal }) => {
     return (
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Listado de Empleados</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            <Form.Group controlId="busqueda">
+                    <Form.Label>Buscar Empleado</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre o apellido"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </Form.Group>
                 <Table striped bordered hover responsive className="table-responsive">
                     <thead>
                         <tr>
@@ -316,7 +343,7 @@ const ModalListarEmpleados = ({ show, handleClose, empleados, handleConfirmarEli
                                 <td>{empleado.apellido}</td>
                                 <td>{empleado.correo}</td>
                                 <td>{empleado.telefono}</td>
-                                <td>
+                                <td className="d-flex justify-content-between align-items-center">
                                     <Button variant="warning" onClick={() => handleModificarEmpleadoModal(empleado)}>Modificar</Button>{' '}
                                     <Button variant="danger" onClick={() => handleConfirmarEliminarModal(empleado)}>Eliminar</Button>
                                 </td>
