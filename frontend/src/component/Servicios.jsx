@@ -288,14 +288,15 @@ const ModalAgregarServicio = ({
 };
 
 // Componente ModalListarServicios para mostrar todos los servicios
+// Componente ModalListarServicios para mostrar todos los servicios
 const ModalListarServicios = ({ show, handleClose, servicios, busqueda, setBusqueda, handleConfirmarEliminarModal, handleModificarServicioModal }) => {
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="lg" scrollable>
             <Modal.Header closeButton>
                 <Modal.Title>Lista de Servicios</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form.Group controlId="busqueda">
+                <Form.Group controlId="busqueda">
                     <Form.Label>Buscar Servicios</Form.Label>
                     <Form.Control
                         type="text"
@@ -304,7 +305,7 @@ const ModalListarServicios = ({ show, handleClose, servicios, busqueda, setBusqu
                         onChange={(e) => setBusqueda(e.target.value)}
                     />
                 </Form.Group>
-                <Table striped bordered hover>
+                <Table striped bordered hover responsive="sm">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -336,6 +337,7 @@ const ModalListarServicios = ({ show, handleClose, servicios, busqueda, setBusqu
         </Modal>
     );
 };
+
 
 // Componente ModalConfirmarEliminarServicio para confirmar la eliminación de un servicio
 const ModalConfirmarEliminarServicio = ({ show, handleClose, servicioSeleccionado, handleEliminarServicio }) => {
