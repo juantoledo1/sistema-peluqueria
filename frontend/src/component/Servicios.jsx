@@ -14,14 +14,29 @@ const Servicios = () => {
     const [precio, setPrecio] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [servicios, setServicios] = useState([]);
+    const [serviciosFiltrados, setServiciosFiltrados] = useState([]);
     const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
     const [error, setError] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [busqueda, setBusqueda] = useState('');
 
     useEffect(() => {
         listarServicios();
     }, []);
+
+    useEffect(() => {
+        if (busqueda.trim() === '') {
+            setServiciosFiltrados(servicios);
+        } else {
+            const filtrados = servicios.filter(servicio =>
+                servicio.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+                servicio.descripcion.toLowerCase().includes(busqueda.toLowerCase())
+            );
+            setServiciosFiltrados(filtrados);
+        }
+    }, [busqueda, servicios]);
+
 
     const handleAgregarServicioModal = () => setShowAgregarServicioModal(true);
     const handleCloseAgregarServicioModal = () => setShowAgregarServicioModal(false);
@@ -82,6 +97,7 @@ const Servicios = () => {
         try {
             const response = await axios.get('http://localhost:4000/listar_servicios');
             setServicios(response.data);
+            setServiciosFiltrados(response.data);
         } catch (error) {
             console.error('Error al obtener la lista de servicios:', error);
         }
@@ -164,7 +180,9 @@ const Servicios = () => {
             <ModalListarServicios
                 show={showListarServiciosModal}
                 handleClose={handleCloseListarServiciosModal}
-                servicios={servicios}
+                servicios={serviciosFiltrados}
+                busqueda={busqueda}
+                setBusqueda={setBusqueda}
                 handleConfirmarEliminarModal={handleConfirmarEliminarModal}
                 handleModificarServicioModal={handleModificarServicioModal}
             />
@@ -270,14 +288,24 @@ const ModalAgregarServicio = ({
 };
 
 // Componente ModalListarServicios para mostrar todos los servicios
-const ModalListarServicios = ({ show, handleClose, servicios, handleConfirmarEliminarModal, handleModificarServicioModal }) => {
+// Componente ModalListarServicios para mostrar todos los servicios
+const ModalListarServicios = ({ show, handleClose, servicios, busqueda, setBusqueda, handleConfirmarEliminarModal, handleModificarServicioModal }) => {
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="lg" scrollable>
             <Modal.Header closeButton>
                 <Modal.Title>Lista de Servicios</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Table striped bordered hover>
+                <Form.Group controlId="busqueda">
+                    <Form.Label>Buscar Servicios</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre o descripción"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </Form.Group>
+                <Table striped bordered hover responsive="sm">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -294,7 +322,7 @@ const ModalListarServicios = ({ show, handleClose, servicios, handleConfirmarEli
                                 <td>{servicio.nombre}</td>
                                 <td>{servicio.descripcion}</td>
                                 <td>{servicio.precio}</td>
-                                <td>
+                                <td className="d-flex justify-content-between align-items-center">
                                     <Button variant="warning" onClick={() => handleModificarServicioModal(servicio)}>Modificar</Button>{' '}
                                     <Button variant="danger" onClick={() => handleConfirmarEliminarModal(servicio)}>Eliminar</Button>
                                 </td>
@@ -309,6 +337,7 @@ const ModalListarServicios = ({ show, handleClose, servicios, handleConfirmarEli
         </Modal>
     );
 };
+
 
 // Componente ModalConfirmarEliminarServicio para confirmar la eliminación de un servicio
 const ModalConfirmarEliminarServicio = ({ show, handleClose, servicioSeleccionado, handleEliminarServicio }) => {
