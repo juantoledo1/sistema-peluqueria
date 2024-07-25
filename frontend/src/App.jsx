@@ -8,7 +8,7 @@ import Empleados from './component/Empleados';
 import Servicios from './component/Servicios';
 import Turnos from './component/Turnos';
 import Usuarios from './component/Usuarios';
-import Roles from './component/Roles';
+import Ganancias from './component/Ganancias';
 import Dashboard from './component/Dashboard';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
                     <Route path='servicios' element={<Servicios />} />
                     <Route path='turnos' element={<Turnos />} />
                     <Route path='usuarios' element={<Usuarios />} />
-                    <Route path='roles' element={<Roles />} />
+                    <Route path='ganancias' element={<Ganancias />} />
                 </Route>
             </Routes>
         </Router>

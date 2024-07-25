@@ -24,8 +24,8 @@ const Sidebar = () => {
                     <Nav.Link as={Link} to="/dashboard/usuarios" className="text-light d-flex align-items-center">
                         <Person className="me-2" /><span className="d-none d-md-block">Usuarios</span>
                     </Nav.Link>
-                    <Nav.Link as={Link} to="/dashboard/roles" className="text-light d-flex align-items-center">
-                        <FileEarmark className="me-2" /><span className="d-none d-md-block">Roles</span>
+                    <Nav.Link as={Link} to="/dashboard/ganancias" className="text-light d-flex align-items-center">
+                        <FileEarmark className="me-2" /><span className="d-none d-md-block">Ganancias</span>
                     </Nav.Link>
                 </Nav>
             </div>
