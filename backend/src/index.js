@@ -28,6 +28,7 @@ app.use(require('./routes/routesClientes.js'));
 app.use(require('./routes/routesTurnos.js'));
 app.use(require('./routes/routesUsuarios.js'));
 app.use(require('./routes/routesLogin.js'));
+app.use(require('./routes/routesRestablecerContrasena.js'));
 // Iniciar el servidor
 app.listen(app.get('puerto'), () => {
     console.log('El servidor de la peluquería está corriendo en el puerto', app.get('puerto'));
