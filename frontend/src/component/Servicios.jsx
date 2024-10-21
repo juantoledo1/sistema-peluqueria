@@ -155,13 +155,13 @@ const Servicios = () => {
         <>
             {/* <CustomNavbar /> */}
             <div className="bg-dark text-light vh-100 d-flex align-items-center justify-content-center">
-                <Container>
+                <div>
                     <h2 className='text-center'>Servicios</h2>
                     <div className="d-grid gap-2 mb-3">
                         <Button variant="success" size="lg" onClick={handleAgregarServicioModal}>Agregar Servicio</Button>
                         <Button variant="info" size="lg" onClick={handleListarServiciosModal}>Listar Servicios</Button>
                     </div>
-                </Container>
+                </div>
             </div>
 
             {/* Modales */}

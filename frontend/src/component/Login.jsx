@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Button, Container, Alert, Row, Col } from 'react-bootstrap';
 import { login } from '../servicios/servicios';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ user: '', pass: '' });
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (isLoggedIn) {
-            window.location.href = '/dashboard'; // Redireccionar al dashboard si el usuario está autenticado
+            navigate('/dashboard');
         }
-    }, []); // Se ejecuta solo una vez al cargar el componente
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,7 +26,8 @@ const Login = () => {
             const response = await login(credentials);
             if (response.status) {
                 localStorage.setItem('token', response.token);
-                window.location.href = '/dashboard'; // Redireccionar a la página principal después del inicio de sesión exitoso
+                localStorage.setItem('isLoggedIn', 'true');
+                navigate('/dashboard');
             } else {
                 setError(response.mensaje);
             }
@@ -35,22 +37,48 @@ const Login = () => {
     };
 
     return (
-        <Container className="mt-5">
-            <h2>Iniciar sesión</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                    <Form.Label>Nombre de usuario</Form.Label>
-                    <Form.Control type="text" id="user" name="user" value={credentials.user} onChange={handleChange} />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Contraseña</Form.Label>
-                    <Form.Control type="password" id="pass" name="pass" value={credentials.pass} onChange={handleChange} />
-                </Form.Group>
-                <Button variant="primary" type="submit">Iniciar sesión</Button>
-            </Form>
-            <p className="mt-3">¿No tienes una cuenta? <Link to="/registros">Regístrate</Link></p>
-            <p>¿Olvidaste tu contraseña? <Link to="/recuperar-contraseña">Recupérala aquí</Link></p>
+        <Container className="mt-5 d-flex justify-content-center align-items-center ">
+            <Row className="w-100 ">
+                <Col md={6} lg={4} className="mx-auto">
+                    <h2 className="text-center">Iniciar sesión</h2>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nombre de usuario</Form.Label>
+                            <Form.Control
+                                type="text"
+                                id="user"
+                                name="user"
+                                value={credentials.user}
+                                onChange={handleChange}
+                                placeholder="Ingrese su usuario"
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Control
+                                type="password"
+                                id="pass"
+                                name="pass"
+                                value={credentials.pass}
+                                onChange={handleChange}
+                                placeholder="Ingrese su contraseña"
+                                required
+                            />
+                        </Form.Group>
+                        <Button variant="primary" type="submit" className="w-100">
+                            Iniciar sesión
+                        </Button>
+                    </Form>
+                    <p className="mt-3 text-center">
+                        ¿No tienes una cuenta? <Link to="/registros">Regístrate</Link>
+                    </p>
+                    <p className="text-center">
+                        ¿Olvidaste tu contraseña? <Link to="/recuperar-contraseña">Recupérala aquí</Link>
+                    </p>
+                </Col>
+            </Row>
         </Container>
     );
 };

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 
-const CustomNavbar = ({ handleLogout }) => {
+const CustomNavbar = () => {
     const [expanded, setExpanded] = useState(false);
     const navbarRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleToggle = () => {
         setExpanded(!expanded);
@@ -27,6 +28,12 @@ const CustomNavbar = ({ handleLogout }) => {
         };
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isLoggedIn');
+        navigate('/login'); // Redirigir al login
+    };
+
     return (
         <Navbar
             ref={navbarRef}
@@ -34,7 +41,7 @@ const CustomNavbar = ({ handleLogout }) => {
             expand="lg"
             expanded={expanded}
             className="p-0"
-            style={{ backgroundColor: expanded ? 'rgba(0, 123, 255, 0.5)' : 'info' }} // Color semi-transparente
+            style={{ backgroundColor: expanded ? 'rgba(0, 123, 255, 0.5)' : 'info' }}
         >
             <Navbar.Brand as={Link} to="/" className="d-lg-none">
                 Juan Toledo Peluquero
@@ -48,7 +55,7 @@ const CustomNavbar = ({ handleLogout }) => {
             </div>
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-between">
                 <Nav className="text-center">
-                    <Nav.Link as={Link} to="/Dashboard" onClick={handleClose}>
+                    <Nav.Link as={Link} to="/dashboard" onClick={handleClose}>
                         Panel
                     </Nav.Link>
                 </Nav>

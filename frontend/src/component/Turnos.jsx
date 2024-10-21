@@ -170,12 +170,12 @@ const Turnos = () => {
   return (
     <>
       <div className="bg-dark text-light vh-100 d-flex align-items-center justify-content-center">
-        <Container>
+        <div>
           <h2 className='text-center'>Turnos</h2>
           <div className="d-grid gap-2 mb-3">
             <Button variant="info" size="lg" onClick={handleListarTurnosModal}>Ver Turnos</Button>
           </div>
-        </Container>
+        </div>
       </div>
 
       <ModalListarTurnos
