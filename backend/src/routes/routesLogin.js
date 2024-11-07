@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const routesUsuarios = require('./routesUsuarios'); // Asegúrate de tener la ruta correcta al archivo routesUsuarios.js
-const mysqlConnect = require('../database/database');
+const mysqlConnect = require('../database/database'); // Asegúrate de que esta ruta sea correcta
+const routesUsuarios = require('./routesUsuarios'); // Ruta de usuarios
 
 const router = express.Router();
 
@@ -42,15 +42,8 @@ router.post('/login', bodyParser.json(), (req, res) => {
             if (resultados.length > 0) {
                 const usuario = resultados[0];
 
-                // Logs de depuración
-                console.log('Contraseña almacenada:', usuario.pass);
-                console.log('Contraseña proporcionada:', pass);
-
                 // Verificar la contraseña con bcrypt
                 const passwordMatch = bcrypt.compareSync(pass.trim(), usuario.pass.trim());
-
-                // Log de depuración
-                console.log('bcrypt.compareSync result:', passwordMatch);
 
                 if (passwordMatch) {
                     // Generar token JWT
@@ -66,6 +59,12 @@ router.post('/login', bodyParser.json(), (req, res) => {
             }
         }
     });
+});
+
+// Endpoint para cerrar sesión (Logout)
+router.post('/logout', (req, res) => {
+    // Aquí simplemente eliminamos el token, ya que no hay estado en el servidor para mantener la sesión
+    res.json({ status: true, mensaje: "Cierre de sesión exitoso" });
 });
 
 // Otras rutas y configuraciones necesarias
